@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Road : MonoBehaviour
 {
-    public Obstacle CloneTarget = null; //Obstacle 복사할 요소
+    public Transform CloneTarget = null; //Obstacle 복사할 요소
     public Transform GenerationTransform = null; //어디에서 생성될 것인지 설정
     public int GenerationPersent = 50;
 
@@ -33,7 +33,8 @@ public class Road : MonoBehaviour
     {
         Transform cloneTrans = GenerationTransform;
         Vector3 offsetPos = cloneTrans.position; //어디에서 만들 것인지
-        offsetPos.y = 0; // y좌표의 값을 0으로 지정해서 floor와 붙어 있게 설정
+        offsetPos.z = 1;  
+        offsetPos.y = -1; // y좌표의 값을 0으로 지정해서 floor와 붙어 있게 설정
 
         GameObject cloneObj = GameObject.Instantiate(CloneTarget.gameObject,offsetPos, GenerationTransform.rotation,this.transform); // 새로운 Object를 생성하는 함수를 사용
         cloneObj.SetActive(true);

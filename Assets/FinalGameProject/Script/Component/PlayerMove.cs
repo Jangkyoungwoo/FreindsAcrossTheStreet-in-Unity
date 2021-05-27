@@ -48,8 +48,7 @@ public class PlayerMove : MonoBehaviour
         this.transform.position += offsetPos;
     }
 
-    // Update is called once per frame
-   void Update()
+    protected void InputUpdate()
     {
         Vector3 offsetPos = Vector3.zero;
 
@@ -70,18 +69,68 @@ public class PlayerMove : MonoBehaviour
             SetPlayerMove(E_DirectionType.Right);
         }
 
-        void OnTriggerEnter(Collider other)
-        {
-            Debug.LogFormat("OnTrigger : {0},{1}"
-                ,other.name
-                ,other.tag);
+    }
 
-            if (other.tag.Contains("Crash"))
-            {
-                Debug.LogFormat("부딪혔다!!");
-            }
+    Vector3 m_RaftOffsetPos = Vector3.zero;
+    protected void UpdateRaft()
+    {
+        if (RaftObject == null)
+        {
+            return;
         }
 
-   
+        Vector3 playerPos = RaftObject.transform.position + m_RaftOffsetPos;
+        this.transform.position = playerPos;
+    }
+    // Update is called once per frame
+   void Update()
+    {
+        InputUpdate();
+        UpdateRaft();
+    }
+
+    [SerializeField]
+    protected Raft RaftObject = null;
+    protected Transform RaftCompareObj=null;
+    protected void OnTriggerEnter(Collider other)
+    {
+        Debug.LogFormat("OnTrigger : {0},{1}"
+            , other.name
+            , other.tag);
+
+        if (other.tag.Contains("Raft"))
+        {
+            RaftObject = this.GetComponent<Raft>();
+
+            if (RaftObject != null)
+            {
+                RaftCompareObj = RaftObject.transform;
+                m_RaftOffsetPos = RaftObject.transform.position - RaftObject.transform.position;
+            }
+
+            Debug.LogFormat("땟못탔다:{0}", other.name,m_RaftOffsetPos);
+            return;
+        }
+
+        if (other.tag.Contains("Crash"))
+        {
+            Debug.LogFormat("부딪혔다!!");
+        }
+
+        
+    }
+
+    protected void OnTraiggerExit(Collider other)
+    {
+        Debug.LogFormat("OnTrigger : {0},{1}"
+            , other.name
+            , other.tag);
+
+        if (RaftCompareObj==other.transform)
+        {
+            RaftCompareObj = null;
+            RaftObject = null;
+
+        }
     }
 }
