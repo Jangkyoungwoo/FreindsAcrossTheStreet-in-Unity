@@ -5,7 +5,7 @@ using UnityEngine;
 public class Raft : MonoBehaviour
 {
 
-    public float MoveSpeed = 1f;
+    public float MoveSpeed = 2f;
     public float RangeDestroy = 12;
     // Start is called before the first frame update
     void Start()
@@ -19,7 +19,7 @@ public class Raft : MonoBehaviour
         float movex = MoveSpeed * Time.deltaTime; // x축으로 어느 정도 움직일지 설정
         this.transform.Translate(movex, 0f, 0f); //Obstacle 움직임
 
-        if (this.transform.localPosition.x >= RangeDestroy)
+        if(this.transform.localPosition.x >= RangeDestroy)
         {
             GameObject.Destroy(this.gameObject);
         }

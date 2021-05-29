@@ -46,6 +46,8 @@ public class PlayerMove : MonoBehaviour
         }
 
         this.transform.position += offsetPos;
+
+        m_RaftOffsetPos += offsetPos;
     }
 
     protected void InputUpdate()
@@ -94,21 +96,21 @@ public class PlayerMove : MonoBehaviour
     protected Transform RaftCompareObj=null;
     protected void OnTriggerEnter(Collider other)
     {
-        Debug.LogFormat("OnTrigger : {0},{1}"
+        Debug.LogFormat("OnTriggerEnter : {0},{1}"
             , other.name
             , other.tag);
 
         if (other.tag.Contains("Raft"))
         {
-            RaftObject = this.GetComponent<Raft>();
+            RaftObject = other.transform.parent.GetComponent<Raft>();
 
             if (RaftObject != null)
             {
                 RaftCompareObj = RaftObject.transform;
-                m_RaftOffsetPos = RaftObject.transform.position - RaftObject.transform.position;
+                m_RaftOffsetPos = this.transform.position - RaftObject.transform.position;
             }
 
-            Debug.LogFormat("땟못탔다:{0}", other.name,m_RaftOffsetPos);
+            Debug.LogFormat("땟못탔다:{0},{1}", other.name, m_RaftOffsetPos);
             return;
         }
 
@@ -120,17 +122,19 @@ public class PlayerMove : MonoBehaviour
         
     }
 
-    protected void OnTraiggerExit(Collider other)
+    protected void OnTriggerExit(Collider other)
     {
         Debug.LogFormat("OnTrigger : {0},{1}"
             , other.name
             , other.tag);
 
-        if (RaftCompareObj==other.transform)
+        if(other.tag.Contains("Raft") && RaftCompareObj == other.transform.parent)
         {
             RaftCompareObj = null;
             RaftObject = null;
+            m_RaftOffsetPos = Vector3.zero;
 
         }
+      
     }
 }
