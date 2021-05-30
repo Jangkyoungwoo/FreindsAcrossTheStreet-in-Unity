@@ -22,8 +22,10 @@ public class EnviromentMapManager : MonoBehaviour
     }
     //public GameObject[] EnviromentObjectArray;
     [Header("[복제용길]")]
-    public Road DefaultRoad = null;
+    public Road CarRoad = null;
+    public Road BusRoad = null;
     public Road WaterRoad = null;
+    public Road SmallWaterRoad = null;
     public GrassSpawn GrassRoad = null;
     public Transform ParentTransform = null;
 
@@ -50,13 +52,37 @@ public class EnviromentMapManager : MonoBehaviour
         return randomCount;
     }
 
-    public int GroupRandomWaterLine(int p_posz)
+    public int GroupRandomBusRoadLine(int p_posz)
     {
         int randomCount = Random.Range(1, 4);
 
         for (int i = 0; i < randomCount; ++i)
         {
+            GenerateBusRoadLine(p_posz + i);
+        }
+
+        return randomCount;
+    }
+
+    public int GroupRandomWaterLine(int p_posz)
+    {
+        int randomCount = Random.Range(1, 3);
+
+        for (int i = 0; i < randomCount; ++i)
+        {
             GenerateWaterLine(p_posz + i);
+        }
+
+        return randomCount;
+    }
+
+    public int GroupRandomSmallWaterLine(int p_posz)
+    {
+        int randomCount = Random.Range(1, 3);
+
+        for (int i = 0; i < randomCount; ++i)
+        {
+            GenerateSmallWaterLine(p_posz + i);
         }
 
         return randomCount;
@@ -75,7 +101,26 @@ public class EnviromentMapManager : MonoBehaviour
     }
     public void GenerateRoadLine(int p_posz)
     {
-        GameObject cloneObj = GameObject.Instantiate(DefaultRoad.gameObject);
+        GameObject cloneObj = GameObject.Instantiate(CarRoad.gameObject);
+        cloneObj.SetActive(true);
+        Vector3 offsetPos = Vector3.zero;
+        offsetPos.z = (float)p_posz;
+        cloneObj.transform.SetParent(ParentTransform);
+        cloneObj.transform.position = offsetPos;
+
+        int randomrot = Random.Range(0, 2);
+        if (randomrot == 1)
+        {
+            cloneObj.transform.rotation = Quaternion.Euler(0, 180f, 0f);
+        }
+        cloneObj.name = "RoadLine_" + p_posz.ToString();
+
+        m_LineMapList.Add(cloneObj.transform);
+        m_LineMapDic.Add(p_posz, cloneObj.transform);
+    }
+    public void GenerateBusRoadLine(int p_posz)
+    {
+        GameObject cloneObj = GameObject.Instantiate(BusRoad.gameObject);
         cloneObj.SetActive(true);
         Vector3 offsetPos = Vector3.zero;
         offsetPos.z = (float)p_posz;
@@ -107,6 +152,25 @@ public class EnviromentMapManager : MonoBehaviour
             cloneObj.transform.rotation = Quaternion.Euler(0, 180f, 0f);
         }
         cloneObj.name = "WaterLine_" + p_posz.ToString();
+
+        m_LineMapList.Add(cloneObj.transform);
+        m_LineMapDic.Add(p_posz, cloneObj.transform);
+    }
+    public void GenerateSmallWaterLine(int p_posz)
+    {
+        GameObject cloneObj = GameObject.Instantiate(SmallWaterRoad.gameObject);
+        cloneObj.SetActive(true);
+        Vector3 offsetPos = Vector3.zero;
+        offsetPos.z = (float)p_posz;
+        cloneObj.transform.SetParent(ParentTransform);
+        cloneObj.transform.position = offsetPos;
+
+        int randomrot = Random.Range(0, 2);
+        if (randomrot == 1)
+        {
+            cloneObj.transform.rotation = Quaternion.Euler(0, 180f, 0f);
+        }
+        cloneObj.name = "SmallWaterLine_" + p_posz.ToString();
 
         m_LineMapList.Add(cloneObj.transform);
         m_LineMapDic.Add(p_posz, cloneObj.transform);
@@ -147,7 +211,7 @@ public class EnviromentMapManager : MonoBehaviour
             for(i= MinPosZ; i< MaxPosZ; ++i)
             {
                 int offsetVal = 0;
-                if (i < 0)
+                if (i <= 0)
                 {
                     GenerateGrassLine(i);
                 }
@@ -155,10 +219,18 @@ public class EnviromentMapManager : MonoBehaviour
                 {
                     if (m_LastRoadType == E_LastRoadType.Grass)
                     {
-                        int randomVal = Random.Range(0, 2);
+                        int randomVal = Random.Range(0, 4);
                         if(randomVal == 0)
                         {
                             offsetVal = GroupRandomWaterLine(i);
+                        }
+                        else if (randomVal == 1)
+                        {
+                            offsetVal = GroupRandomSmallWaterLine(i);
+                        }
+                        else if (randomVal == 2)
+                        {
+                            offsetVal = GroupRandomBusRoadLine(i);
                         }
                         else
                         {
@@ -182,26 +254,34 @@ public class EnviromentMapManager : MonoBehaviour
         if(m_LastLinePos < p_posz + FrontOffsetPosZ)
         {
             int offsetVal = 0;
-            if (m_LastRoadType == E_LastRoadType.Grass)
-            {
-                int randomVal = Random.Range(0, 2);
-                if (randomVal == 0)
+                if (m_LastRoadType == E_LastRoadType.Grass)
                 {
-                    offsetVal = GroupRandomWaterLine(m_LastLinePos);
+                    int randomVal = Random.Range(0, 4);
+                    if (randomVal == 0)
+                    {
+                        offsetVal = GroupRandomWaterLine(m_LastLinePos);
+                    }
+                    else if (randomVal == 1)
+                    {
+                        offsetVal = GroupRandomSmallWaterLine(m_LastLinePos);
+                    }
+                    else if (randomVal == 2)
+                    {
+                        offsetVal = GroupRandomBusRoadLine(m_LastLinePos);
+                    }
+                    else
+                    {
+                        offsetVal = GroupRandomRoadLine(m_LastLinePos);
+                    }
+                    m_LastRoadType = E_LastRoadType.Road;
                 }
                 else
                 {
-                    offsetVal = GroupRandomRoadLine(m_LastLinePos);
-                }
-                m_LastRoadType = E_LastRoadType.Road;
-            }
-            else
-            {
-                offsetVal = GroupRandomGrassLine(m_LastLinePos);
+                    offsetVal = GroupRandomGrassLine(m_LastLinePos);
 
-                m_LastRoadType = E_LastRoadType.Grass;
-            }
-            m_LastLinePos += offsetVal;
+                    m_LastRoadType = E_LastRoadType.Grass;
+                }
+                m_LastLinePos += offsetVal;
         }
         //많이 지나갔으면 지우기
         if (p_posz - m_BackOffsetLineCount > m_MinLine - m_DeleteLine)

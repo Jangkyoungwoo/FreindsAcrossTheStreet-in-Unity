@@ -142,17 +142,20 @@ public class PlayerMove : MonoBehaviour
 
         Vector3 playerPos = RaftObject.transform.position + m_RaftOffsetPos;
         this.transform.position = playerPos;
+  
     }
     // Update is called once per frame
-   void Update()
+    void Update()
     {
         InputUpdate();
         UpdateRaft();
+      
     }
 
     [SerializeField]
     protected Raft RaftObject = null;
     protected Transform RaftCompareObj=null;
+    protected Transform SmallRaftCompareObj = null;
     protected void OnTriggerEnter(Collider other)
     {
         Debug.LogFormat("OnTriggerEnter : {0},{1}"
@@ -172,6 +175,7 @@ public class PlayerMove : MonoBehaviour
             Debug.LogFormat("땟못탔다:{0},{1}", other.name, m_RaftOffsetPos);
             return;
         }
+
 
         if (other.tag.Contains("Crash"))
         {
@@ -194,6 +198,6 @@ public class PlayerMove : MonoBehaviour
             m_RaftOffsetPos = Vector3.zero;
 
         }
-      
+
     }
 }

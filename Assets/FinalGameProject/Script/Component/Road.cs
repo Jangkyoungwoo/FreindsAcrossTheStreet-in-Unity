@@ -8,7 +8,7 @@ public class Road : MonoBehaviour
     public Transform GenerationPos = null; //어디에서 생성될 것인지 설정
     public int GenerationPersent = 50;
 
-    public float CloneDelaySec = 1f; //몇초마다 한번씩 생길 것인지 설정
+    public float CloneDelaySec = 1.2f; //몇초마다 한번씩 생길 것인지 설정
     protected float NextSecToClone = 0f;
     void Start()
     {
