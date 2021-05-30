@@ -22,7 +22,8 @@ public class Road : MonoBehaviour
         if (NextSecToClone <= setTime) //원하는 시간마다 clone을 생성
         {
             int randomval = Random.Range(0, 100);
-            if(randomval <= GenerationPersent){ // 어느 타이밍에 무작위로 GenerationPersent만큼 생성
+            if(randomval <= GenerationPersent)// 어느 타이밍에 무작위로 GenerationPersent만큼 생성
+            { 
                 CloneObstacle();  
             }
             NextSecToClone = setTime + CloneDelaySec;
@@ -34,8 +35,12 @@ public class Road : MonoBehaviour
         Transform cloneTrans = GenerationPos;
         Vector3 offsetPos = cloneTrans.position; //어디에서 만들 것인지
         offsetPos.y = 1f; // y좌표의 값을 1으로 지정해서 floor와 붙어 있게 설정
-        offsetPos.z = 1f;
-        GameObject cloneObj = GameObject.Instantiate(CloneTarget.gameObject,offsetPos, GenerationPos.rotation,this.transform); // 새로운 Object를 생성하는 함수를 사용
+       
+        GameObject cloneObj = GameObject.Instantiate(CloneTarget.gameObject
+            ,offsetPos
+            , GenerationPos.rotation
+            ,this.transform); // 새로운 Object를 생성하는 함수를 사용
+
         cloneObj.SetActive(true);
     }
 }

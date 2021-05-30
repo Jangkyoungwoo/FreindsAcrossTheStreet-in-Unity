@@ -5,10 +5,14 @@ using UnityEngine;
 public class PlayerMove : MonoBehaviour
 {
     public Rigidbody PlayerBody = null;
-    // Start is called before the first frame update
+    public EnviromentMapManager EnviromentMapManagerCom = null;
+
     void Start()
     {
-        
+        string[] templayer = new string[] { "Plant" };
+        m_TreeLayerMask = LayerMask.GetMask(templayer);
+
+        EnviromentMapManagerCom.UpdateForWardBackMove((int)this.transform.position.z);
     }
 
     public enum E_DirectionType
@@ -21,33 +25,88 @@ public class PlayerMove : MonoBehaviour
 
     [SerializeField]
     protected E_DirectionType m_DirectionType=E_DirectionType.up;
-
-    protected void SetPlayerMove(E_DirectionType p_movetype)
+    protected int m_TreeLayerMask = -1;
+    protected bool IsCheckDirectionViewMove(E_DirectionType p_movetype)
     {
-        Vector3 offsetPos = Vector3.zero;
-
+        Vector3 direction = Vector3.zero;
         switch (p_movetype)
         {
             case E_DirectionType.up:
-                offsetPos = Vector3.forward;
+                {
+                    direction = Vector3.forward;
+                }
                 break;
             case E_DirectionType.Down:
-                offsetPos = Vector3.back;
+                {
+                    direction = Vector3.back;
+                }
                 break;
             case E_DirectionType.Left:
-                offsetPos = Vector3.left;
+                {
+                    direction = Vector3.left;
+                }
                 break;
             case E_DirectionType.Right:
-                offsetPos = Vector3.right;
+                {
+                    direction = Vector3.right;
+
+                }
                 break;
             default:
                 Debug.LogErrorFormat("SetActorMove Error:{0}", p_movetype);
                 break;
         }
 
-        this.transform.position += offsetPos;
+        RaycastHit hitObj;
+        if(Physics.Raycast(this.transform.position, direction,out hitObj,1f, m_TreeLayerMask))
+        {
 
+            return false;
+
+        }
+        return true;
+    }
+
+    protected void SetPlayerMove(E_DirectionType p_movetype)
+    {
+        if (!IsCheckDirectionViewMove(p_movetype))
+        {
+            return; 
+        }
+        Vector3 offsetPos = Vector3.zero;
+
+        switch (p_movetype)
+        {
+            case E_DirectionType.up:
+            {
+                offsetPos = Vector3.forward;
+            }
+            break;
+            case E_DirectionType.Down:
+           {
+                offsetPos = Vector3.back;
+           }
+           break;
+           case E_DirectionType.Left:
+           {
+                offsetPos = Vector3.left;
+           }
+           break;
+           case E_DirectionType.Right:
+           {
+                offsetPos = Vector3.right;
+
+           }
+           break;
+            default:
+                Debug.LogErrorFormat("SetActorMove Error:{0}", p_movetype);
+                break;
+        }
+
+        this.transform.position += offsetPos;
         m_RaftOffsetPos += offsetPos;
+
+        EnviromentMapManagerCom.UpdateForWardBackMove((int)this.transform.position.z);
     }
 
     protected void InputUpdate()
