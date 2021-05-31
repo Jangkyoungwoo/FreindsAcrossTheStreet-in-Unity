@@ -6,6 +6,10 @@ public class PlayerMove : MonoBehaviour
 {
     public Rigidbody PlayerBody = null;
     public EnviromentMapManager EnviromentMapManagerCom = null;
+    public GameManager manager;
+    public AudioSource MoveSound;
+    public AudioSource FallingSound;
+    bool isDead;
 
     void Start()
     {
@@ -109,25 +113,33 @@ public class PlayerMove : MonoBehaviour
         EnviromentMapManagerCom.UpdateForWardBackMove((int)this.transform.position.z);
     }
 
-    protected void InputUpdate()
+    protected void InputUpdate()  // player 움직임 키 설정 
     {
         Vector3 offsetPos = Vector3.zero;
 
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.UpArrow)&& !isDead)
         {
+            transform.LookAt(transform.position + Vector3.forward);
             SetPlayerMove(E_DirectionType.up);
+            MoveSound.Play();
         }
-        else if (Input.GetKeyDown(KeyCode.DownArrow))
+        else if (Input.GetKeyDown(KeyCode.DownArrow) && !isDead)
         {
+            transform.LookAt(transform.position + Vector3.back);
             SetPlayerMove(E_DirectionType.Down);
+            MoveSound.Play();
         }
-        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        else if (Input.GetKeyDown(KeyCode.LeftArrow) && !isDead)
         {
+            transform.LookAt(transform.position + Vector3.left);
             SetPlayerMove(E_DirectionType.Left);
+            MoveSound.Play();
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow))
+        else if (Input.GetKeyDown(KeyCode.RightArrow) && !isDead)
         {
+            transform.LookAt(transform.position + Vector3.right);
             SetPlayerMove(E_DirectionType.Right);
+            MoveSound.Play();
         }
 
     }
@@ -149,7 +161,7 @@ public class PlayerMove : MonoBehaviour
     {
         InputUpdate();
         UpdateRaft();
-      
+        fallingDown();
     }
 
     [SerializeField]
@@ -176,13 +188,11 @@ public class PlayerMove : MonoBehaviour
             return;
         }
 
-
         if (other.tag.Contains("Crash"))
         {
             Debug.LogFormat("부딪혔다!!");
+            onDie();
         }
-
-        
     }
 
     protected void OnTriggerExit(Collider other)
@@ -199,5 +209,19 @@ public class PlayerMove : MonoBehaviour
 
         }
 
+    }
+
+    void onDie()
+    {
+        isDead = true;
+        manager.GameOver();
+    }
+
+    void fallingDown()
+    {
+        if (PlayerBody.position.y < -0.5f)
+        {
+            onDie();
+        }
     }
 }

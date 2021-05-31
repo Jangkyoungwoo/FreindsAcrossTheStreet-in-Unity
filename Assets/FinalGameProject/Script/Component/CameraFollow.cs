@@ -17,7 +17,7 @@ public class CameraFollow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 targetCameraPos = Target.position + m_OffsetVal;
+        Vector3 targetCameraPos = new Vector3(Target.position.x, 0, Target.position.z) + m_OffsetVal; // player가 떨어지는 것을 쫒아가지 않기 위해 y축 고정
         transform.position = Vector3.Lerp(transform.position, targetCameraPos, Smooth * Time.deltaTime); //두 벡터 사이의 시간에 따른 위치를 구하기 위해 Lerp사용
     }
 }

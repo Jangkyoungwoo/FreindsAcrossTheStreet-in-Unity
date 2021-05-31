@@ -68,7 +68,7 @@ public class GrassSpawn : MonoBehaviour
                 randomIndex = Random.Range(0, EnviromentObjectList.Count); // 어떤 것을 기준으로 만들것이냐
                 tempClone = GameObject.Instantiate(EnviromentObjectList[randomIndex].gameObject);
                 tempClone.SetActive(true);
-                offsetPos.Set(i, 0.5f, 0f);
+                offsetPos.Set(i, 1f, 0f);
 
                 tempClone.transform.SetParent(this.transform);
                 tempClone.transform.localPosition = offsetPos;
