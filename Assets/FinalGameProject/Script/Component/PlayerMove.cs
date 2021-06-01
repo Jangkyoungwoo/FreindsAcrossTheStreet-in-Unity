@@ -8,8 +8,7 @@ public class PlayerMove : MonoBehaviour
     public EnviromentMapManager EnviromentMapManagerCom = null;
     public GameManager manager;
     public AudioSource MoveSound;
-    public AudioSource FallingSound;
-    bool isDead;
+    public bool isDead;
 
     void Start()
     {
@@ -135,7 +134,7 @@ public class PlayerMove : MonoBehaviour
             SetPlayerMove(E_DirectionType.Left);
             MoveSound.Play();
         }
-        else if (Input.GetKeyDown(KeyCode.RightArrow) && !isDead)
+        else if (Input.GetKeyDown(KeyCode.RightArrow) && !isDead )
         {
             transform.LookAt(transform.position + Vector3.right);
             SetPlayerMove(E_DirectionType.Right);
@@ -162,6 +161,8 @@ public class PlayerMove : MonoBehaviour
         InputUpdate();
         UpdateRaft();
         fallingDown();
+        playerMoveHolder();
+
     }
 
     [SerializeField]
@@ -170,9 +171,6 @@ public class PlayerMove : MonoBehaviour
     protected Transform SmallRaftCompareObj = null;
     protected void OnTriggerEnter(Collider other)
     {
-        Debug.LogFormat("OnTriggerEnter : {0},{1}"
-            , other.name
-            , other.tag);
 
         if (other.tag.Contains("Raft"))
         {
@@ -183,24 +181,17 @@ public class PlayerMove : MonoBehaviour
                 RaftCompareObj = RaftObject.transform;
                 m_RaftOffsetPos = this.transform.position - RaftObject.transform.position;
             }
-
-            Debug.LogFormat("땟못탔다:{0},{1}", other.name, m_RaftOffsetPos);
             return;
         }
 
         if (other.tag.Contains("Crash"))
         {
-            Debug.LogFormat("부딪혔다!!");
             onDie();
         }
     }
 
     protected void OnTriggerExit(Collider other)
     {
-        Debug.LogFormat("OnTrigger : {0},{1}"
-            , other.name
-            , other.tag);
-
         if(other.tag.Contains("Raft") && RaftCompareObj == other.transform.parent)
         {
             RaftCompareObj = null;
@@ -208,7 +199,6 @@ public class PlayerMove : MonoBehaviour
             m_RaftOffsetPos = Vector3.zero;
 
         }
-
     }
 
     void onDie()
@@ -224,4 +214,13 @@ public class PlayerMove : MonoBehaviour
             onDie();
         }
     }
+
+    void playerMoveHolder()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape) && !isDead)
+            isDead = true;
+        else if (Input.GetKeyDown(KeyCode.Escape) && isDead)
+            isDead = false;
+    }
+    
 }

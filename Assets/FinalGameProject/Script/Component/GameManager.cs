@@ -8,28 +8,31 @@ public class GameManager : MonoBehaviour
     public GameObject MenuSet;
     public GameObject OverPanel;
 
-    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
-
-        if (Input.GetButton("Cancel"))
+        Menu();
+    }
+    public void Menu()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (MenuSet.activeSelf)
+            {
                 MenuSet.SetActive(false);
+                Time.timeScale = 1f;
+            }
             else
+            {
                 MenuSet.SetActive(true);
-
+                Time.timeScale = 0f;
+            }
         }
-
-
     }
-        
     public void GameExit()
     {
         Application.Quit();
@@ -43,5 +46,13 @@ public class GameManager : MonoBehaviour
     public void Restart()
     {
         SceneManager.LoadScene(0);
+        Time.timeScale = 1f;
+    }
+
+    public void Continue()
+    {
+        MenuSet.SetActive(false);
+        Time.timeScale = 1f;
+        GameObject.Find("Chicken").GetComponent<PlayerMove>().isDead = !GameObject.Find("Chicken").GetComponent<PlayerMove>().isDead;
     }
 }
