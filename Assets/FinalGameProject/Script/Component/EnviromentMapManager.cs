@@ -42,11 +42,11 @@ public class EnviromentMapManager : MonoBehaviour
 
     public int GroupRandomRoadLine(int p_posz)
     {
-        int randomCount = Random.Range(1, 4);
+        int randomCount = Random.Range(1, 4); // 길이 복제 되는 정도를 조정
 
         for(int i=0; i<randomCount; ++i)
         {
-            GenerateRoadLine(p_posz + i);
+            GenerateRoadLine(p_posz + i); // 복제된 길들이 겹치지 않게 생성
         }
 
         return randomCount;
@@ -101,7 +101,7 @@ public class EnviromentMapManager : MonoBehaviour
     }
     public void GenerateRoadLine(int p_posz)
     {
-        GameObject cloneObj = GameObject.Instantiate(CarRoad.gameObject);
+        GameObject cloneObj = GameObject.Instantiate(CarRoad.gameObject); //GameObj 복제
         cloneObj.SetActive(true);
         Vector3 offsetPos = Vector3.zero;
         offsetPos.z = (float)p_posz;
@@ -111,11 +111,11 @@ public class EnviromentMapManager : MonoBehaviour
         int randomrot = Random.Range(0, 2);
         if (randomrot == 1)
         {
-            cloneObj.transform.rotation = Quaternion.Euler(0, 180f, 0f);
+            cloneObj.transform.rotation = Quaternion.Euler(0, 180f, 0f); //장애물들이 반대 방향으로 나오도록 설정
         }
         cloneObj.name = "RoadLine_" + p_posz.ToString();
 
-        m_LineMapList.Add(cloneObj.transform);
+        m_LineMapList.Add(cloneObj.transform); 
         m_LineMapDic.Add(p_posz, cloneObj.transform);
     }
     public void GenerateBusRoadLine(int p_posz)
